@@ -11,19 +11,19 @@ def clean_phone_number(phone_number)
   #If the phone number is 11 digits and the first number is not 1, then it is a bad number[done]
   #If the phone number is more than 11 digits, assume that it is a bad number[done]
   
-  if phone_number.length < 10
-    phone_number = nil
-  elsif phone_number.length > 11
-    phone_number = nil
-  elsif phone_number.length == 11 && phone_number[0] != '1'
-    phone_number = nil
-  elsif phone_number.length == 11 && phone_number[0] == '1' 
-    phone_number = phone_number[1..10]
-  elsif phone_number.length == 10
-    phone_number
-  end
+  clean_phone_number = phone_number.gsub(/[^\d]/, "")
 
-  phone_number
+  if clean_phone_number.length < 10
+    clean_phone_number = 0
+  elsif clean_phone_number.length > 11
+    clean_phone_number = 0
+  elsif clean_phone_number.length == 11 && clean_phone_number[0] != '1'
+    clean_phone_number = 0
+  elsif clean_phone_number.length == 11 && clean_phone_number[0] == '1' 
+    clean_phone_number = clean_phone_number[1..10]
+  elsif clean_phone_number.length == 10
+    clean_phone_number
+  end
 end
 
 def peak_registration_hours_and_dates
@@ -56,8 +56,11 @@ def peak_registration_hours_and_dates
 
   distribution_days = days_array.tally.sort_by(&:last).reverse.to_h
 
+  puts "\n"
 
   puts "------------Hour Distribution-----------\n \n #{distribution_hours}"
+
+  puts "\n"
 
   puts "------------Top 3 Hours-----------------\n \n"
 
@@ -66,14 +69,20 @@ def peak_registration_hours_and_dates
     puts "#{i}) Hour: #{k}:00 with #{v} registrations"
   end
 
+  puts "\n"
+
   puts "------------Day Distribution-----------\n \n #{distribution_days}"
 
-  puts "------------Top 3 Hours-----------------\n \n"
+  puts "\n"
+
+  puts "------------Top 3 Days-----------------\n \n"
 
   distribution_days.first(3).each_with_index do |(k, v), i| 
     i += 1
     puts "#{i}) Day: #{k} with #{v} registrations"
   end
+
+  puts "\n"
 end
 
 def clean_zipcode(zipcode)
@@ -105,7 +114,6 @@ def save_thank_you_letter(id,form_letter)
   end
 end
 
-=begin
 puts 'EventManager initialized.'
 
 contents = CSV.open(
@@ -113,7 +121,7 @@ contents = CSV.open(
   headers: true,
   header_converters: :symbol
 )
-
+=begin
 template_letter = File.read('form_letter.erb')
 erb_template = ERB.new template_letter
 
@@ -122,6 +130,7 @@ contents.each do |row|
   name = row[:first_name]
   zipcode = clean_zipcode(row[:zipcode])
   legislators = legislators_by_zipcode(zipcode)
+  
 
   form_letter = erb_template.result(binding)
 
@@ -130,3 +139,10 @@ end
 =end 
 
 peak_registration_hours_and_dates
+
+
+contents.each do |row|
+  phone = clean_phone_number(row[:homephone])
+
+  puts phone
+end

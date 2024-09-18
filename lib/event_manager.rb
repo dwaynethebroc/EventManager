@@ -121,6 +121,7 @@ contents = CSV.open(
   headers: true,
   header_converters: :symbol
 )
+
 =begin
 template_letter = File.read('form_letter.erb')
 erb_template = ERB.new template_letter
@@ -138,11 +139,14 @@ contents.each do |row|
 end
 =end 
 
-peak_registration_hours_and_dates
-
+phone_number_array = []
 
 contents.each do |row|
   phone = clean_phone_number(row[:homephone])
-
-  puts phone
+  phone_number_array.push(phone)
 end
+
+peak_registration_hours_and_dates
+
+puts "-----------------Cleaned Phone Numbers--------------\n"
+puts phone_number_array
